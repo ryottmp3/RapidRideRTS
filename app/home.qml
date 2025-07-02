@@ -12,11 +12,7 @@ ApplicationWindow {
     title: "RTS RapidRide"
     color: "#121212"
 
-    signal viewRoutesClicked()
-    signal purchaseTicketsClicked()
-    signal openWalletClicked()
-    signal viewAlertsClicked()
-    signal settingsClicked()
+    signal viewPdfClicked()
 
     ColumnLayout {
         anchors.fill: parent
@@ -43,12 +39,12 @@ ApplicationWindow {
             font.pixelSize: 20
             background: Rectangle { color: "#1f1f1f" }
             contentItem: Text {
-                text: qsTr("View Routes")
+                text: qsTr("View Route")
                 color: "#ffffff"
                 font.pixelSize: 20
                 anchors.centerIn: parent
             }
-            onClicked: console.log("View Routes... ")
+            onClicked: controller.loadPage("routes.qml")
         }
 
         Button {
