@@ -24,11 +24,12 @@ A lightweight, cost-effective mobile and web-based app for the **Rapid City RTS 
 
 ## 💸 Ticket Types & Pricing
 
-| Ticket Type       | Price   | Details                            |
-|-------------------|---------|-------------------------------------|
-| Single Ride       | $1.50   | Expires after 2 hours               |
-| 10-Ride Pass      | $13.50  | 10 single rides; track remaining    |
-| Monthly Pass      | $30.00  | Unlimited rides for 30 days         |
+| Ticket Type       | Cash Price   | Card Price  | Details                             |
+|-------------------|--------------|-------------|-------------------------------------|
+| Single Ride       | $1.50        | $1.85       | Purchase on bus only                |
+| 10-Ride Pass      | $13.50       | $14.25      | 10 single rides; track remaining    |
+| Monthly Pass      | $30.00       | $31.25      | Unlimited rides for 30 days         |
+
 
 ---
 
@@ -100,7 +101,6 @@ A checklist-style development roadmap broken into **four core phases**. The init
 ## 🧱 Optional Features
 
 - [ ] Prepaid ticket codes (offline payment compatibility)
-- [ ] Language toggle (English/Lakota)
 - [ ] Ticket gifting (send a ride to someone else)
 - [ ] Kiosk mode (install app on public devices)
 
