@@ -4,12 +4,8 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Window 2.15
 
-ApplicationWindow {
-    id: window
-    width: 480
-    height: 800
-    visible: true
-    title: "RTS RapidRide"
+Rectangle {
+    anchors.fill: parent
     color: "#121212"
 
     signal viewPdfClicked()
@@ -44,7 +40,7 @@ ApplicationWindow {
                 font.pixelSize: 20
                 anchors.centerIn: parent
             }
-            onClicked: backend.open_pdf_viewer(fname="borglum")
+            onClicked: backend.open_pdf_viewer("borglum")
         }
 
         Button {

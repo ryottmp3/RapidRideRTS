@@ -40,7 +40,7 @@ class AppBackend(QObject):
         super().__init__()
         self._windows = []
 
-    @Slot()
+    @Slot(str)
     def open_pdf_viewer(self, fname):
         viewer = PdfViewer(f"assets/routes/{fname}-map2025.pdf")
         viewer.show()
@@ -49,9 +49,10 @@ class AppBackend(QObject):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    app.setQuitOnLastWindowClosed(True)
     engine = QQmlApplicationEngine()
-
     engine.load("main.qml")
+
     if not engine.rootObjects():
         sys.exit(-1)
 
@@ -63,6 +64,5 @@ if __name__ == "__main__":
 
     engine.rootContext().setContextProperty("controller", controller)
     engine.rootContext().setContextProperty("backend", backend)
-
 
     sys.exit(app.exec())

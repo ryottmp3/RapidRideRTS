@@ -3,10 +3,10 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 
 ApplicationWindow {
-    id: window
+    id: root
+    visible: true
     width: 480
     height: 800
-    visible: true
     title: "RTS RapidRide"
 
     Loader {
@@ -18,6 +18,10 @@ ApplicationWindow {
     
     function loadPage(pageUrl) {
         pageLoader.source = pageUrl;
+    }
+
+    onClosing: {
+        Qt.quit()
     }
 }
 
