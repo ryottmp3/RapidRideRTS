@@ -14,6 +14,7 @@ This app enables users to:
 
  - PySide 6
  - Segno
+ - python-dotenv
 
 ---
 
