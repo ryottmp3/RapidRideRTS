@@ -44,11 +44,12 @@ A checklist-style development roadmap broken into **four core phases**. The init
 🕐 Display posted schedules from GTFS or CSV.
 
 ### Tasks:
-- [ ] Download or convert RapidRide's schedule to GTFS or structured CSV
-- [ ] Parse `routes.txt`, `stops.txt`, `stop_times.txt`, `trips.txt`
-- [ ] Build mobile app UI to:
-  - [ ] Browse by route
-  - [ ] Show stop times for each route/day
+- <strike> [ ] Download or convert RapidRide's schedule to GTFS or structured CSV </strike>
+- <strike> [ ] Parse `routes.txt`, `stops.txt`, `stop_times.txt`, `trips.txt` </strike>
+  - Routes are viewed via PDF file, map-based routes/schedules will be implemented later on.
+- [x] Build mobile app UI to:
+  - [x] Browse by route
+  - [x] Show stop times for each route/day
 - [ ] Include section for admin-posted alerts
 
 ---
