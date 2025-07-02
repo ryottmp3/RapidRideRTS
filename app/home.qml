@@ -6,6 +6,8 @@ import QtQuick.Window 2.15
 
 Rectangle {
     anchors.fill: parent
+    border.width: 2
+    border.color: "#f5721b"
     color: "#121212"
 
     signal viewPdfClicked()
@@ -17,13 +19,22 @@ Rectangle {
         ToolBar {
             Layout.fillWidth: true
             contentHeight: 150
-            background: Rectangle { color: "#1e1e1e" }
+            background: Rectangle {
+                color: "#1f1f1f" 
+                border.width: 2
+                border.color: "#f5721b"
+            }
 
             Image {
                 width: 400; height: 150
                 source: "assets/rapidride.png"
                 fillMode: Image.PreserveAspectFit
                 anchors.centerIn: parent
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: controller.loadPage("home.qml")
+                }
             }
         }
 
@@ -32,12 +43,17 @@ Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
             text: "View Routes"
-            font.pixelSize: 20
-            background: Rectangle { color: "#1f1f1f" }
+            font.pointSize: 32
+            font.bold: true
+            background: Rectangle {
+                color: "#1f1f1f"
+                border.width: 2
+                border.color: "#f5721b"
+            }
             contentItem: Text {
                 text: qsTr("View Route")
                 color: "#ffffff"
-                font.pixelSize: 20
+                font.pointSize: 20
                 anchors.centerIn: parent
             }
             onClicked: controller.loadPage("routes.qml")
@@ -47,12 +63,17 @@ Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
             text: "Purchase Tickets"
-            font.pixelSize: 20
-            background: Rectangle { color: "#1f1f1f" }
+            font.pointSize: 20
+            font.bold: true
+            background: Rectangle {
+                color: "#1f1f1f"
+                border.width: 2
+                border.color: "#f5721b"
+            }
             contentItem: Text {
                 text: qsTr("Purchase Tickets")
                 color: "#ffffff"
-                font.pixelSize: 20
+                font.pointSize: 20
                 anchors.centerIn: parent
             }
             onClicked: console.log("Purchase Tickets... ")
@@ -62,12 +83,17 @@ Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
             text: "Open Wallet"
-            font.pixelSize: 20
-            background: Rectangle { color: "#1f1f1f" }
+            font.pointSize: 20
+            font.bold: true
+            background: Rectangle {
+                color: "#1f1f1f"
+                border.width: 2
+                border.color: "#f5721b"
+            }
             contentItem: Text {
                 text: qsTr("Open Wallet")
                 color: "#ffffff"
-                font.pixelSize: 20
+                font.pointSize: 20
                 anchors.centerIn: parent
             }
             onClicked: console.log("Open Wallet... ")
@@ -77,12 +103,17 @@ Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
             text: "View Alerts"
-            font.pixelSize: 20
-            background: Rectangle { color: "#1f1f1f" }
+            font.pointSize: 20
+            font.bold: true
+            background: Rectangle {
+                color: "#1f1f1f"
+                border.width: 2
+                border.color: "#f5721b"
+            }
             contentItem: Text {
                 text: qsTr("View Alerts")
                 color: "#ffffff"
-                font.pixelSize: 20
+                font.pointSize: 20
                 anchors.centerIn: parent
             }
             onClicked: console.log("View Alerts... ")
@@ -92,12 +123,17 @@ Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
             text: "Settings"
-            font.pixelSize: 20
-            background: Rectangle { color: "#1f1f1f" }
+            font.pointSize: 20
+            font.bold: true
+            background: Rectangle {
+                color: "#1f1f1f"
+                border.width: 2
+                border.color: "#f5721b"
+            }
             contentItem: Text {
                 text: qsTr("Settings")
                 color: "#ffffff"
-                font.pixelSize: 20
+                font.pointSize: 20
                 anchors.centerIn: parent
             }
             onClicked: console.log("Settings... ")
