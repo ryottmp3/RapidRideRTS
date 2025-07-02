@@ -55,7 +55,7 @@ Rectangle {
                 font.pixelSize: 20
                 anchors.centerIn: parent
             }
-            onClicked: console.log("Coolidge... ")
+            onClicked: backend.open_pdf_viewer("coolidge")
         }
 
         Button {
@@ -70,7 +70,7 @@ Rectangle {
                 font.pixelSize: 20
                 anchors.centerIn: parent
             }
-            onClicked: console.log("Jefferson... ")
+            onClicked: backend.open_pdf_viewer("jefferson")
         }
 
         Button {
@@ -85,7 +85,7 @@ Rectangle {
                 font.pixelSize: 20
                 anchors.centerIn: parent
             }
-            onClicked: console.log("Lincoln... ")
+            onClicked: backend.open_pdf_viewer("lincoln")
         }
 
         Button {
@@ -100,7 +100,7 @@ Rectangle {
                 font.pixelSize: 20
                 anchors.centerIn: parent
             }
-            onClicked: console.log("Roosevelt... ")
+            onClicked: backend.open_pdf_viewer("roosevelt")
         }
         
         Button {
@@ -115,7 +115,7 @@ Rectangle {
                 font.pixelSize: 20
                 anchors.centerIn: parent
             }
-            onClicked: console.log("Washington... ")
+            onClicked: backend.open_pdf_viewer("washington")
         }
     }
 }
