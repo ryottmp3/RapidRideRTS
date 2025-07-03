@@ -15,6 +15,7 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.exceptions import InvalidSignature
 from dotenv import load_dotenv
 from pathlib import Path
+from db import Ticket, Session
 
 
 def initialize_signing_key():
@@ -89,6 +90,7 @@ class TicketGenerator:
             "issued_at": now.strftime("%Y%m%d_%H%M%z"),
             "issuer": self.issuer
         }
+        self.save_ticket(ticket, self.sign_ticket(ticket))
         return ticket
 
     def serialize_ticket(
@@ -130,6 +132,26 @@ class TicketGenerator:
             json.dumps(signed_ticket).encode()
         ).decode()
         return QR_Payload
+
+    def save_ticket(
+        self,
+        ticket: dict,
+        signature: str
+    ):
+        """Calls the Database API to save a ticket to a uid"""
+        session = Session()
+        db_ticket = Ticket(
+            ticket_id=ticket["ticket_id"],
+            user_id=ticket["user_id"],
+            ticket_type=ticket["ticket_type"],
+            valid_for=ticket.get("valid_for"),
+            issued_at=ticket["issued_at"],
+            issuer=ticket["issuer"],
+            signature=signature
+        )
+        session.add(db_ticket)
+        session.commit()
+        session.close()
 
 
 class TicketValidator:
@@ -197,6 +219,14 @@ class TicketValidator:
 
         return False  # Unknown or malformed ticket
 
+    def get_ticket_by_id(
+        self,
+        ticket_id: str
+    ) -> Ticket | None:
+        session = Session()
+        ticket = session.query(Ticket).filter_by(ticket_id=ticket_id).first()
+        return ticket
+
     def validate(
         self,
         payload_b64: str
@@ -205,6 +235,7 @@ class TicketValidator:
             payload = self.decode_payload(payload_b64)
             ticket = payload["ticket"]
             signature = payload["signature"]
+            db_record = self.get_ticket_by_id(ticket["ticket_id"])
             """
             embedded_pubkey_b64 = payload["public_key"]
 
@@ -236,6 +267,18 @@ class TicketValidator:
                 return {
                     "valid": False,
                     "reason": "Ticket not valid for current time"
+                }
+
+            if not db_record:
+                return {
+                    "valid": False,
+                    "reason": "Ticket does not exist in database."
+                }
+
+            if db_record.status != "active":
+                return {
+                    "valid": False,
+                    "reason": f"Ticket status: {db_record.status}"
                 }
 
             return {
