@@ -70,8 +70,8 @@ The initial version does not include real-time GPS, maps, or live bus tracking.
 
 ### Tasks:
 - [ ] Build `/buy_ticket` FastAPI endpoint
-- [ ] Support all ticket types (single, 10-ride, monthly)
-- [ ] Generate QR code using UUID + expiration metadata
+- [x] Support all ticket types (single, 10-ride, monthly)
+- [x] Generate QR code using UUID + expiration metadata
 - [ ] Store ticket in Supabase with status tracking
 - [ ] Display ticket in mobile app (including expiration countdown)
 
