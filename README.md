@@ -12,9 +12,15 @@ This app enables users to:
 
 ## Requirements
 
- - PySide 6
- - Segno
+<bold>Arch Linux Packages<\bold>
+ - pyside6
+ - pyside6-tools
+ - python-segno (AUR)
+ - python-qrcode-artistic (AUR)
+   - yay -S python-segno python-qrcode-artistic --mflags --nocheck 
  - python-dotenv
+ - sqlite
+ - python-sqlalchemy
 
 ---
 
