@@ -1,0 +1,40 @@
+// settings.qml – Theme Selector Page
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
+
+Item {
+    width: 400
+    height: 600
+
+    ColumnLayout {
+        anchors.fill: parent
+        spacing: 20
+        padding: 24
+
+        Label {
+            text: "Settings"
+            font.pixelSize: 28
+            font.bold: true
+            color: "#f5721b"
+            Layout.alignment: Qt.AlignHCenter
+        }
+
+        ComboBox {
+            id: themeSelector
+            Layout.fillWidth: true
+            model: backend.availableThemes()
+            currentIndex: backend.availableThemes().indexOf(backend.currentTheme())
+
+            onCurrentIndexChanged: {
+                backend.setTheme(themeSelector.currentText)
+            }
+        }
+
+        Button {
+            text: "Back"
+            onClicked: controller.loadPage("home.qml")
+        }
+    }
+}
+

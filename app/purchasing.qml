@@ -1,96 +1,107 @@
-// TransitHome.qml
+// purchasing.qml – modern ticket purchasing page
+// Integrates with Network.generateTicket() and listens for ticketGenerated signal.
+// Expects the Network singleton and controller from main.py.
+
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Window 2.15
 
-Rectangle {
+Item {
     anchors.fill: parent
-    color: "#121212"
+
+    Rectangle {
+        anchors.fill: parent
+        gradient: Gradient {
+            GradientStop { position: 0.0; color: "#1f1f1f" }
+            GradientStop { position: 1.0; color: "#121212" }
+        }
+    }
 
     ColumnLayout {
+        id: content
         anchors.fill: parent
-        spacing: 0
+        anchors.margins: 24
+        spacing: 20
 
-        ToolBar {
+        Label {
+            text: qsTr("Purchase Ticket")
+            font.pixelSize: 24
+            color: "white"
+            Layout.alignment: Qt.AlignHCenter
+        }
+
+        ComboBox {
+            id: ticketTypeCombo
             Layout.fillWidth: true
-            contentHeight: 150
-            background: Rectangle {
-                color: "#1f1f1f"
-                border.width: 2
-                border.color: "#f5721b"
+            model: [
+                { text: "Single Use", value: "single_use" },
+                { text: "24-Hour Pass", value: "day_pass" },
+                { text: "Monthly Pass", value: "monthly_pass" }
+            ]
+            textRole: "text"
+            onActivated: {
+                // optional: update description below
+                description.text = model[index].text + qsTr(" selected")
             }
+        }
 
-            Image {
-                width: 400; height: 150
-                source: "assets/rapidride.png"
-                fillMode: Image.PreserveAspectFit
-                anchors.centerIn: parent
+        TextArea {
+            id: description
+            readOnly: true
+            text: qsTr("Choose a ticket type above.")
+            wrapMode: Text.WordWrap
+            color: "#cccccc"
+            Layout.fillWidth: true
+            Layout.preferredHeight: 80
+            background: Rectangle { color: "transparent" }
+        }
 
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: controller.loadPage("home.qml")
+        Button {
+            id: buyButton
+            Layout.fillWidth: true
+            height: 56
+            text: qsTr("Buy Now")
+            font.pixelSize: 18
+            background: Rectangle {
+                radius: 8
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: "#f5721b" }
+                    GradientStop { position: 1.0; color: "#d55400" }
                 }
             }
+            contentItem: Text {
+                text: buyButton.text
+                anchors.centerIn: parent
+                color: "white"
+                font.pixelSize: 18
+                font.bold: true
+            }
+            onClicked: {
+                Network.generateTicket(ticketTypeCombo.model[ticketTypeCombo.currentIndex].value)
+                busy.visible = true
+            }
         }
 
-        // 3 equally spaced buttons
-        Button {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            text: "View Routes"
-            font.pointSize: 20
-            background: Rectangle {
-                color: "#1f1f1f" 
-                border.width: 2
-                border.color: "#f5721b"
-            }
-            contentItem: Text {
-                text: qsTr("Purchase Single-Use Ticket")
-                color: "#ffffff"
-                font.pointSize: 20
-                anchors.centerIn: parent
-            }
-            onClicked: backend.open_pdf_viewer("borglum")
+        BusyIndicator {
+            id: busy
+            width: 32; height: 32
+            visible: false
+            running: visible
+            Layout.alignment: Qt.AlignHCenter
         }
+    }
 
-        Button {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            text: "Purchase Tickets"
-            font.pointSize: 20
-            background: Rectangle {
-                color: "#1f1f1f" 
-                border.width: 2
-                border.color: "#f5721b"
-            }
-            contentItem: Text {
-                text: qsTr("Purchase Ticket 10-Pack")
-                color: "#ffffff"
-                font.pointSize: 20
-                anchors.centerIn: parent
-            }
-            onClicked: backend.open_pdf_viewer("coolidge")
+    Connections {
+        target: Network
+        function onTicketGenerated(payload) {
+            busy.visible = false
+            // Optionally save payload or navigate to wallet
+            controller.loadPage("wallet.qml")
         }
-
-        Button {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            text: "Open Wallet"
-            font.pointSize: 20
-            background: Rectangle {
-                color: "#1f1f1f" 
-                border.width: 2
-                border.color: "#f5721b"
-            }
-            contentItem: Text {
-                text: qsTr("Purchase Monthly Pass")
-                color: "#ffffff"
-                font.pointSize: 20
-                anchors.centerIn: parent
-            }
-            onClicked: backend.open_pdf_viewer("jefferson")
+        function onErrorOccurred(err) {
+            busy.visible = false
+            description.text = qsTr("Error: ") + err
         }
     }
 }
-

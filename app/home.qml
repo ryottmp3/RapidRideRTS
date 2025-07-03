@@ -1,142 +1,56 @@
-// TransitHome.qml
+// home.qml – content‑only page (App shell handles navigation)
+// This page shows big action buttons and relies on main.qml for the top bar & drawer.
+
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
-import QtQuick.Window 2.15
 
 Rectangle {
     anchors.fill: parent
-    border.width: 2
-    border.color: "#f5721b"
-    color: "#121212"
 
-    signal viewPdfClicked()
+    // subtle vertical gradient
+    gradient: Gradient {
+        GradientStop { position: 0.0; color: "#1f1f1f" }
+        GradientStop { position: 1.0; color: "#121212" }
+    }
 
     ColumnLayout {
         anchors.fill: parent
-        spacing: 0
+        anchors.margins: 16
+        spacing: 12
 
-        ToolBar {
-            Layout.fillWidth: true
-            contentHeight: 150
-            background: Rectangle {
-                color: "#1f1f1f" 
-                border.width: 2
-                border.color: "#f5721b"
-            }
+        // big menu buttons (labels + controller navigation)
+        Repeater {
+            model: [
+                { label: "View Routes",       page: "routes.qml"       },
+                { label: "Purchase Tickets", page: "purchasing.qml"   },
+                { label: "Open Wallet",      page: "wallet.qml"       },
+                { label: "View Alerts",      page: "alerts.qml"       },
+                { label: "Settings",         page: "settings.qml"     }
+            ]
 
-            Image {
-                width: 400; height: 150
-                source: "assets/rapidride.png"
-                fillMode: Image.PreserveAspectFit
-                anchors.centerIn: parent
+            delegate: Button {
+                Layout.fillWidth: true
+                height: 60
+                text: modelData.label
+                font.pixelSize: 18
 
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: controller.loadPage("home.qml")
+                background: Rectangle {
+                    color: "#292929"
+                    radius: 8
+                    border.color: "#f5721b"
+                    border.width: 1
                 }
-            }
-        }
 
-        // 5 equally spaced buttons
-        Button {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            text: "View Routes"
-            font.pointSize: 32
-            font.bold: true
-            background: Rectangle {
-                color: "#1f1f1f"
-                border.width: 2
-                border.color: "#f5721b"
-            }
-            contentItem: Text {
-                text: qsTr("View Route")
-                color: "#ffffff"
-                font.pointSize: 20
-                anchors.centerIn: parent
-            }
-            onClicked: controller.loadPage("routes.qml")
-        }
+                contentItem: Text {
+                    text: modelData.label
+                    color: "white"
+                    font.pixelSize: 18
+                    anchors.centerIn: parent
+                }
 
-        Button {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            text: "Purchase Tickets"
-            font.pointSize: 20
-            font.bold: true
-            background: Rectangle {
-                color: "#1f1f1f"
-                border.width: 2
-                border.color: "#f5721b"
+                onClicked: controller.loadPage(modelData.page)
             }
-            contentItem: Text {
-                text: qsTr("Purchase Tickets")
-                color: "#ffffff"
-                font.pointSize: 20
-                anchors.centerIn: parent
-            }
-            onClicked: console.log("Purchase Tickets... ")
-        }
-
-        Button {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            text: "Open Wallet"
-            font.pointSize: 20
-            font.bold: true
-            background: Rectangle {
-                color: "#1f1f1f"
-                border.width: 2
-                border.color: "#f5721b"
-            }
-            contentItem: Text {
-                text: qsTr("Open Wallet")
-                color: "#ffffff"
-                font.pointSize: 20
-                anchors.centerIn: parent
-            }
-            onClicked: console.log("Open Wallet... ")
-        }
-
-        Button {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            text: "View Alerts"
-            font.pointSize: 20
-            font.bold: true
-            background: Rectangle {
-                color: "#1f1f1f"
-                border.width: 2
-                border.color: "#f5721b"
-            }
-            contentItem: Text {
-                text: qsTr("View Alerts")
-                color: "#ffffff"
-                font.pointSize: 20
-                anchors.centerIn: parent
-            }
-            onClicked: console.log("View Alerts... ")
-        }
-
-        Button {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            text: "Settings"
-            font.pointSize: 20
-            font.bold: true
-            background: Rectangle {
-                color: "#1f1f1f"
-                border.width: 2
-                border.color: "#f5721b"
-            }
-            contentItem: Text {
-                text: qsTr("Settings")
-                color: "#ffffff"
-                font.pointSize: 20
-                anchors.centerIn: parent
-            }
-            onClicked: console.log("Settings... ")
         }
     }
 }

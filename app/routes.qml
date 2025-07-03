@@ -1,152 +1,56 @@
-// TransitHome.qml
+// routes.qml – modern layout for route viewing
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Window 2.15
 
-Rectangle {
+Item {
     anchors.fill: parent
-    color: "#121212"
-
-    ColumnLayout {
+    Rectangle {
         anchors.fill: parent
-        spacing: 0
+        gradient: Gradient {
+            GradientStop { position: 0.0; color: "#1c1c1e" }
+            GradientStop { position: 1.0; color: "#2c2c2e" }
+        }
 
-        ToolBar {
-            Layout.fillWidth: true
-            contentHeight: 150
-            background: Rectangle {
-                color: "#1f1f1f"
-                border.width: 2
-                border.color: "#f5721b"
-            }
+        ColumnLayout {
+            anchors.fill: parent
+            anchors.margins: 20
+            spacing: 16
 
-            Image {
-                width: 400; height: 150
-                source: "assets/rapidride.png"
-                fillMode: Image.PreserveAspectFit
-                anchors.centerIn: parent
+            Repeater {
+                model: [
+                    { name: "Borglum Route", file: "borglum" },
+                    { name: "Coolidge Route", file: "coolidge" },
+                    { name: "Jefferson Route", file: "jefferson" },
+                    { name: "Lincoln Route", file: "lincoln" },
+                    { name: "Roosevelt Route", file: "roosevelt" },
+                    { name: "Washington Route", file: "washington" }
+                ]
 
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: controller.loadPage("home.qml")
+                delegate: Button {
+                    Layout.fillWidth: true
+                    height: 60
+                    text: modelData.name
+                    font.bold: true
+                    font.pointSize: 16
+                    background: Rectangle {
+                        radius: 10
+                        gradient: Gradient {
+                            GradientStop { position: 0.0; color: "#f5721b" }
+                            GradientStop { position: 1.0; color: "#d55400" }
+                        }
+                    }
+                    contentItem: Text {
+                        text: modelData.name
+                        anchors.centerIn: parent
+                        color: "white"
+                        font.pointSize: 18
+                        font.bold: true
+                    }
+                    onClicked: backend.open_pdf_viewer(modelData.file)
                 }
             }
-        }
-
-        // 5 equally spaced buttons
-        Button {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            text: "View Routes"
-            font.pointSize: 20
-            background: Rectangle {
-                color: "#1f1f1f" 
-                border.width: 2
-                border.color: "#f5721b"
-            }
-            contentItem: Text {
-                text: qsTr("Borglum Route")
-                color: "#ffffff"
-                font.pointSize: 20
-                anchors.centerIn: parent
-            }
-            onClicked: backend.open_pdf_viewer("borglum")
-        }
-
-        Button {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            text: "Purchase Tickets"
-            font.pointSize: 20
-            background: Rectangle {
-                color: "#1f1f1f" 
-                border.width: 2
-                border.color: "#f5721b"
-            }
-            contentItem: Text {
-                text: qsTr("Coolidge Route")
-                color: "#ffffff"
-                font.pointSize: 20
-                anchors.centerIn: parent
-            }
-            onClicked: backend.open_pdf_viewer("coolidge")
-        }
-
-        Button {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            text: "Open Wallet"
-            font.pointSize: 20
-            background: Rectangle {
-                color: "#1f1f1f" 
-                border.width: 2
-                border.color: "#f5721b"
-            }
-            contentItem: Text {
-                text: qsTr("Jefferson Route")
-                color: "#ffffff"
-                font.pointSize: 20
-                anchors.centerIn: parent
-            }
-            onClicked: backend.open_pdf_viewer("jefferson")
-        }
-
-        Button {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            text: "View Alerts"
-            font.pointSize: 20
-            background: Rectangle {
-                color: "#1f1f1f" 
-                border.width: 2
-                border.color: "#f5721b"
-            }
-            contentItem: Text {
-                text: qsTr("Lincoln Route")
-                color: "#ffffff"
-                font.pointSize: 20
-                anchors.centerIn: parent
-            }
-            onClicked: backend.open_pdf_viewer("lincoln")
-        }
-
-        Button {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            text: "Settings"
-            font.pointSize: 20
-            background: Rectangle {
-                color: "#1f1f1f" 
-                border.width: 2
-                border.color: "#f5721b"
-            }
-            contentItem: Text {
-                text: qsTr("Roosevelt Route")
-                color: "#ffffff"
-                font.pointSize: 20
-                anchors.centerIn: parent
-            }
-            onClicked: backend.open_pdf_viewer("roosevelt")
-        }
-        
-        Button {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            text: "Settings"
-            font.pointSize: 20
-            background: Rectangle {
-                color: "#1f1f1f" 
-                border.width: 2
-                border.color: "#f5721b"
-            }
-            contentItem: Text {
-                text: qsTr("Washington Route")
-                color: "#ffffff"
-                font.pointSize: 20
-                anchors.centerIn: parent
-            }
-            onClicked: backend.open_pdf_viewer("washington")
         }
     }
 }
