@@ -239,18 +239,20 @@ class TicketValidator:
             ticket = payload["ticket"]
             signature = payload["signature"]
             db_record = self.get_ticket_by_id(ticket["ticket_id"])
-            """
-            embedded_pubkey_b64 = payload["public_key"]
 
-            embedded_pubkey = Ed25519PublicKey.from_public_bytes(
-                base64.b64decode(embedded_pubkey_b64)
-            )
-
-            ticket_json = self.serialize_ticket(ticket).encode()
-            signature_bytes = base64.b64decode(signature)
-
-            embedded_pubkey.verify(signature_bytes, ticket_json)
-            """
+            # This code is for embedded public keys;
+            # Low-Security Option
+            #
+            # embedded_pubkey_b64 = payload["public_key"]
+            #
+            # embedded_pubkey = Ed25519PublicKey.from_public_bytes(
+            #     base64.b64decode(embedded_pubkey_b64)
+            # )
+            #
+            # ticket_json = self.serialize_ticket(ticket).encode()
+            # signature_bytes = base64.b64decode(signature)
+            #
+            # embedded_pubkey.verify(signature_bytes, ticket_json)
 
             if ticket.get("issuer") != self.trusted_issuer:
                 return {
@@ -271,6 +273,7 @@ class TicketValidator:
                     "valid": False,
                     "reason": "Ticket not valid for current time"
                 }
+
 
             if not db_record:
                 return {
@@ -346,15 +349,12 @@ if __name__ == "__main__":
         t2 = gen.generate_ticket(
             uid="001131",
             ticket_type="monthly_pass",
-            valid_for="2025-07"
+            valid_for="2025-08"
 
         )
-        q1 = gen.create_QR_payload(t1)
-        q2 = gen.create_QR_payload(t2)
-
         check = TicketValidator(pub_bytes)
-        v1 = check.validate(q1)
-        v2 = check.validate(q2)
+        v1 = check.validate(t1)
+        v2 = check.validate(t2)
 
         print(f"Q1 Validation: {v1}")
         print(f"Q2 Validation: {v2}")
