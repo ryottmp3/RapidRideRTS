@@ -90,8 +90,10 @@ class TicketGenerator:
             "issued_at": now.strftime("%Y%m%d_%H%M%z"),
             "issuer": self.issuer
         }
-        self.save_ticket(ticket, self.sign_ticket(ticket))
-        return ticket
+        signature = self.sign_ticket(ticket)
+        self.save_ticket(ticket, signature)
+        QRP = self.create_QR_payload(ticket, signature)
+        return QRP
 
     def serialize_ticket(
         self,
@@ -113,7 +115,8 @@ class TicketGenerator:
 
     def create_QR_payload(
         self,
-        ticket: dict
+        ticket: dict,
+        signature: str
     ) -> str:
         """Combine ticket and signature into a payload"""
         # pubkey_bytes = self.private_key.public_key().public_bytes(
@@ -124,7 +127,7 @@ class TicketGenerator:
 
         signed_ticket = {
             "ticket": ticket,
-            "signature": self.sign_ticket(ticket),
+            "signature": signature,
             # "public_key": pubkey_b64
         }
 

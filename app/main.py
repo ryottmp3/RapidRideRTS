@@ -7,7 +7,8 @@ from PySide6.QtWidgets import QApplication, QMainWindow
 from PySide6.QtPdf import QPdfDocument
 from PySide6.QtPdfWidgets import QPdfView
 from PySide6.QtQml import QQmlApplicationEngine
-from PySide6.QtCore import QObject, Slot
+from PySide6.QtCore import QObject, Slot, Signal
+from ticketing import TicketGenerator, TicketValidator
 
 
 class PdfViewer(QMainWindow):
