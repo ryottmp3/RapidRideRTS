@@ -42,10 +42,14 @@ class AppBackend(QObject):
         self._windows = []
 
     @Slot(str)
-    def open_pdf_viewer(self, fname):
+    def open_pdf_viewer(self, fname: str):
         viewer = PdfViewer(f"assets/routes/{fname}-map2025.pdf")
         viewer.show()
         self._windows.append(viewer)  # Prevent garbage collection
+
+    @Slot(str)
+    def purchase_ticket(self, ticket_type: str):
+        pass
 
 
 if __name__ == "__main__":

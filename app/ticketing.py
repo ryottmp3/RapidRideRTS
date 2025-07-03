@@ -15,7 +15,7 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.exceptions import InvalidSignature
 from dotenv import load_dotenv
 from pathlib import Path
-from db import Ticket, Session
+from ticketdb import Ticket, Session
 
 
 def initialize_signing_key():
