@@ -1,4 +1,4 @@
-// routes.qml – modern layout for route viewing
+// routes.qml – theme-aware layout for route viewing
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
@@ -6,12 +6,10 @@ import QtQuick.Window 2.15
 
 Item {
     anchors.fill: parent
+
     Rectangle {
         anchors.fill: parent
-        gradient: Gradient {
-            GradientStop { position: 0.0; color: "#1c1c1e" }
-            GradientStop { position: 1.0; color: "#2c2c2e" }
-        }
+        color: Theme.background
 
         ColumnLayout {
             anchors.fill: parent
@@ -31,23 +29,25 @@ Item {
                 delegate: Button {
                     Layout.fillWidth: true
                     height: 60
-                    text: modelData.name
-                    font.bold: true
                     font.pointSize: 16
+                    font.bold: true
+                    text: modelData.name
+
                     background: Rectangle {
+                        color: Theme.buttonBackground
                         radius: 10
-                        gradient: Gradient {
-                            GradientStop { position: 0.0; color: "#f5721b" }
-                            GradientStop { position: 1.0; color: "#d55400" }
-                        }
+                        border.color: Theme.accent
+                        border.width: 1
                     }
+
                     contentItem: Text {
                         text: modelData.name
                         anchors.centerIn: parent
-                        color: "white"
+                        color: Theme.buttonText
                         font.pointSize: 18
                         font.bold: true
                     }
+
                     onClicked: backend.open_pdf_viewer(modelData.file)
                 }
             }

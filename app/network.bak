@@ -1,16 +1,16 @@
-# Network.py
+# app/network.py
 #!/usr/bin/env python3
 """
 network.py
 
 QObject-based bridge between QML and the FastAPI backend.
 All HTTP is done here; QML receives results via signals or optional callbacks.
-Includes detailed debug logging and persistent auth token via QSettings.
+Includes detailed debug logging in the style of uvicorn --log-level trace.
 """
 import base64
 import logging
 import requests
-from PySide6.QtCore import QObject, Signal, Slot, QSettings, Property
+from PySide6.QtCore import QObject, Signal, Slot, Property
 from PySide6.QtQml import QJSValue
 
 # Configure logger for this module
@@ -27,16 +27,10 @@ class NetworkManager(QObject):
     # ----- Init ------------------------------------------------------------
     def __init__(self, base_url: str = "http://127.0.0.1:8000"):
         super().__init__()
-        self.settings = QSettings()
         self.base_url = base_url
         self._auth_header: str | None = None
         self._ticket_list: list[dict] = []
         self._qr_image: str = ""
-        # Load saved auth header, if any
-        saved = self.settings.value("auth_header", "")
-        if saved:
-            self._auth_header = saved
-            logger.debug("Loaded auth_header from QSettings: %s...", saved[:10])
         logger.debug("NetworkManager initialized with base_url=%s", self.base_url)
 
     # ----- Already Logged In? ---------------------------------------------
@@ -49,8 +43,7 @@ class NetworkManager(QObject):
     # ----- Auth token helpers ---------------------------------------------
     def _set_token(self, token: str, token_type: str = "Bearer"):
         self._auth_header = f"{token_type} {token}"
-        self.settings.setValue("auth_header", self._auth_header)
-        logger.debug("Saved auth_header to QSettings: %s...", token[:10])
+        logger.debug("Auth token set: %s...", token[:10])
 
     # ----- Exposed properties (for wallet.qml) ----------------------------
     def _get_ticket_list(self):
@@ -58,6 +51,12 @@ class NetworkManager(QObject):
         return self._ticket_list
 
     ticketList = Property("QVariant", _get_ticket_list, constant=True)
+
+    def _get_qr_image(self):
+        logger.debug("Retrieving QR image length=%d", len(self._qr_image))
+        return self._qr_image
+
+    qrImage = Property(str, _get_qr_image, constant=True)
 
     # ----- Login -----------------------------------------------------------
     @Slot(str, str, QJSValue, result=None)
@@ -98,9 +97,8 @@ class NetworkManager(QObject):
             r.raise_for_status()
             resp_json = r.json()
             logger.debug("Register response JSON: %s", resp_json)
-            # Store token from registration as well
             self._set_token(resp_json["access_token"], resp_json["token_type"])
-            # auto-login for QML flow
+            # Immediately verify by logging in
             self.login(username, password)
             msg = "Registration successful."
             self.registerFinished.emit(True, msg)
@@ -114,11 +112,10 @@ class NetworkManager(QObject):
                 callback.call([False, msg])
 
     # ----- Logout ----------------------------------------------------------
-    @Slot(result=None)
+    @Slot()
     def logout(self):
         """Clear JWT from memory (client-side logout)"""
-        logger.debug("Logout called, clearing auth header and settings")
-        self.settings.remove("auth_header")
+        logger.debug("Logout called, clearing auth and caches")
         self._auth_header = None
         self._ticket_list = []
         self._qr_image = ""
@@ -182,7 +179,8 @@ class NetworkManager(QObject):
         logger.debug("loadQRCode request to %s", url)
         try:
             r = requests.get(url, headers=headers, timeout=8)
-            logger.debug("loadQRCode response status=%d, content-length=%s", r.status_code, r.headers.get("Content-Length"))
+            logger.debug("loadQRCode response status=%d, content-length=%s",
+                         r.status_code, r.headers.get("Content-Length"))
             r.raise_for_status()
             self._qr_image = "data:image/png;base64," + base64.b64encode(r.content).decode()
             logger.debug("loadQRCode image encoded, length=%d", len(self._qr_image))

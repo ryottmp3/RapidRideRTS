@@ -117,15 +117,12 @@ ApplicationWindow {
                 onClicked: navDrawer.open()
             }
 
-            // Spacer pushes content left
-            Item { Layout.fillWidth: true }
-
             // Logo image
             Image {
                 id: logo
                 source: "assets/rapidride.png"
                 fillMode: Image.PreserveAspectFit
-                Layout.preferredWidth: 200
+                Layout.preferredWidth: 60
                 Layout.preferredHeight: 40
                 Layout.alignment: Qt.AlignVCenter
             }

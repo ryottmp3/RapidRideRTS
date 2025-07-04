@@ -1,14 +1,13 @@
-// wallet.qml — Displays user tickets with QR code access
+// wallet.qml — Modern ticket wallet with QR viewer
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
-import QtQuick.Window 2.15
-import QtQuick.Dialogs 1.3
-import QtQuick.Controls.Material 2.15
 
 Rectangle {
+    id: root
     anchors.fill: parent
     color: Theme.background
+    Component.onCompleted: Network.fetchTickets()
 
     ColumnLayout {
         anchors.fill: parent
@@ -21,44 +20,60 @@ Rectangle {
             color: Theme.text
         }
 
+        // Empty state
+        Label {
+            id: emptyHint
+            visible: Network.ticketList.length === 0
+            text: "No tickets found. Purchase one to get started."
+            color: Theme.text
+            wrapMode: Text.Wrap
+            horizontalAlignment: Text.AlignHCenter
+            Layout.fillWidth: true
+        }
+
+        // Ticket list
         ListView {
-            id: ticketList
+            id: ticketView
             Layout.fillWidth: true
             Layout.fillHeight: true
-            spacing: 12
-            model: Network.ticketList  // Assumes this is a Q_PROPERTY list
+            spacing: 10
+            clip: true
+            model: Network.ticketList
+
             delegate: Rectangle {
                 width: parent.width
-                height: 100
+                height: 80
+                radius: 8
                 color: Theme.card
-                radius: 10
-                border.color: Theme.border
+                border.color: Theme.accent
                 border.width: 1
-                anchors.margins: 8
 
                 RowLayout {
                     anchors.fill: parent
                     anchors.margins: 12
+                    spacing: 8
 
                     ColumnLayout {
-                        spacing: 4
+                        spacing: 2
                         Label {
-                            text: "Ticket ID: " + model.ticket_id
+                            text: model.ticket_type + " – " + model.issued_at
                             color: Theme.text
                             font.pixelSize: 14
                         }
                         Label {
-                            text: model.ticket_type + " — " + model.issued_at
+                            text: "ID: " + model.ticket_id
                             color: Theme.text
                             font.pixelSize: 12
                         }
                     }
                     Item { Layout.fillWidth: true }
                     Button {
-                        text: "View QR"
+                        text: "QR"
                         onClicked: {
+                            busy.visible = true
+                            currentTicketId = model.ticket_id
                             Network.loadQRCode(model.ticket_id)
-                            qrDialog.open()
+                            qrPopup.open()
                         }
                     }
                 }
@@ -66,16 +81,58 @@ Rectangle {
         }
     }
 
-    Dialog {
-        id: qrDialog
+    // Popup for QR display
+    Popup {
+        id: qrPopup
+        width: parent.width * 0.8
+        height: parent.height * 0.6
         modal: true
-        standardButtons: Dialog.Ok
-        title: "Your Ticket QR Code"
-        contentItem: Image {
-            source: Network.qrImage
-            fillMode: Image.PreserveAspectFit
+        focus: true
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+        background: Rectangle {
+            color: Theme.surface
+            border.color: Theme.accent
+            radius: 10
+        }
+
+        property string currentTicketId: ""
+        ColumnLayout {
             anchors.fill: parent
             anchors.margins: 16
+            spacing: 16
+
+            BusyIndicator {
+                id: busy
+                visible: true
+                running: visible
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+
+            Image {
+                id: qrImage
+                source: Network.qrImage
+                fillMode: Image.PreserveAspectFit
+                anchors.fill: parent
+                visible: !busy.visible
+            }
+
+            Button {
+                text: "Close"
+                Layout.alignment: Qt.AlignHCenter
+                onClicked: qrPopup.close()
+            }
+        }
+
+        // Show/hide spinner as qrImage arrives
+        Connections {
+            target: Network
+            onQrImageChanged: {
+                busy.visible = false
+                qrImage.source = Network.qrImage
+            }
+            onErrorOccurred: {
+                busy.visible = false
+            }
         }
     }
 }
