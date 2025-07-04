@@ -16,6 +16,8 @@ from PySide6.QtPdfWidgets import QPdfView
 from PySide6.QtQml import QQmlApplicationEngine
 from PySide6.QtCore import QObject, Slot, QUrl, Signal, Property, QCoreApplication
 from PySide6.QtGui import QDesktopServices, QGuiApplication, QPalette, QColor
+from PySide6.QtQuick import QQuickWindow, QSGRendererInterface
+QQuickWindow.setGraphicsApi(QSGRendererInterface.GraphicsApi.OpenGL)
 from theme_manager import ThemeManager
 from wallet_store import WalletStore
 
