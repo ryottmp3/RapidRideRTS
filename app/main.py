@@ -272,6 +272,7 @@ if __name__ == "__main__":
     engine.rootContext().setContextProperty("controller", controller)
     engine.rootContext().setContextProperty("backend", backend)
     engine.rootContext().setContextProperty("Theme", theme_controller)
+    engine.rootContext().setContextProperty("PageLoader", loader)
 
     initial_page = "home.qml" if network.isLoggedIn() else "login.qml"
     logger.debug("Setting initial page: %s", initial_page)

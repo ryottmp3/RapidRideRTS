@@ -23,6 +23,7 @@ class NetworkManager(QObject):
     ticketGenerated  = Signal(str)         # base64 payload
     ticketsFetched   = Signal(list)        # list of dicts
     errorOccurred    = Signal(str)         # generic error
+    checkoutSessionCreated = Signal(str)   # emits URL user must visit
 
     # ----- Init ------------------------------------------------------------
     def __init__(self, base_url: str = "http://127.0.0.1:8000"):
@@ -122,6 +123,36 @@ class NetworkManager(QObject):
         self._auth_header = None
         self._ticket_list = []
         self._qr_image = ""
+
+    # ----- Create Stripe Checkout Session ---------------------------------
+    @Slot(str, "QJSValue", result=None)
+    def createCheckoutSession(
+        self,
+        ticket_type: str,
+        callback: QJSValue = None
+    ):
+        """Ask server to create a Stripe checkout Session"""
+        url = f"{self.base_url}/create-checkout-session"
+        headers = {"Authorization": self._auth_header} if self._auth_header else {}
+        try:
+            logger.debug("Creating Stripe Checkout Session")
+            r = requests.post(
+                url,
+                json={
+                    "ticket_type": ticket_type
+                },
+                headers=headers,
+                timeout=8
+            )
+            r.raise_for_status()
+            session_url = r.json()["url"]
+            self.checkoutSessionCreated.emit(session_url)
+            logger.debug(f"Stripe Checkout session created: {session_url}")
+            if callback and callback.isCallable():
+                callback.call([session_url])
+        except Exception as e:
+            logger.error(f"Stripe Checkout Session Creation Failed: {e}")
+            self.errorOccurred.emit(f"Failed to create checkout session: {e}")
 
     # ----- Ticket Generation ----------------------------------------------
     @Slot(str, result=None)

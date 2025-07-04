@@ -68,8 +68,11 @@ Item {
                 font.bold: true
             }
             onClicked: {
-                Network.generateTicket(ticketTypeCombo.model[ticketTypeCombo.currentIndex].value)
                 busy.visible = true
+                Network.createCheckoutSession(
+                    ticketTypeCombo.model[ticketTypeCombo.currentIndex].value,
+                    null
+                )
             }
         }
 
@@ -153,6 +156,21 @@ Item {
         function onQrGenerated(dataUri) {
             qrImage.source = dataUri
             qrPopup.open()
+        }
+    }
+
+    // Listen for Stripe Checkout URL
+    Connections {
+        target: Network
+        function onCheckoutSessionCreated(sessionUrl) {
+            busy.visible = false
+
+            // Swop in the checkout page
+            controller.loadPage("stripe_checkout.qml")
+
+            // Once it's loaded, set its sessionUrl
+            // (Qt.callLater ensures Pageloader.item is non-null)
+                controller.loader.item.sessionUrl = sessionUrl
         }
     }
 }
